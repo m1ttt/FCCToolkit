@@ -15,41 +15,57 @@ const MySwal = withReactContent(Swal);
 function App() {
   const [text, setText] = useState('');
   const [data, setData] = useState(null);
+  const [timer, setTimer] = useState(null);
 
   const handleInputChange = (event) => {
     setText(event.target.value);
-  };
-  const handleClick = () => {
-    const route = `/tabla_verdad/${encodeURIComponent(text)}`;
-    getData(route)
-      .then(result => {
-        setData(result);
 
-      })
-      .catch(error => {
-        console.log(error);
-        console.error('There was a problem with the fetch operation:', error);
-        let errorMessage = error.mensaje;
-        if (error.status === 404) {
-          errorMessage = "No puedes mandar campos vacíos";
-        }
-        MySwal.fire({
-          title: '¡Error!',
-          text: "Revisa la expresión que ingresaste.",
-          icon: 'error',
-          confirmButtonText: 'OK'
+    // Si el temporizador ya está corriendo, lo cancelamos
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    // Si el campo de texto está vacío, no hacemos nada
+    if (event.target.value.trim() === '') {
+      setData(null);
+      return;
+    }
+
+    // Iniciamos un nuevo temporizador que se activará después de 5 segundos
+    setTimer(setTimeout(() => {
+      const route = `/tabla_verdad/${encodeURIComponent(event.target.value)}`;
+      getData(route)
+        .then(result => {
+          setData(result);
+        })
+        .catch(error => {
+          console.log(error);
+          console.error('There was a problem with the fetch operation:', error);
+          let errorMessage = error.mensaje;
+          if (error.status === 404) {
+            errorMessage = "No puedes mandar campos vacíos";
+          }
+          // MySwal.fire({
+          //   title: '¡Error!',
+          //   text: "Revisa la expresión que ingresaste.",
+          //   icon: 'error',
+          //   confirmButtonText: 'OK'
+          // });
         });
-      });
-  }
+    }, 0)); // 5000 milisegundos son 5 segundos
+  };
+
 
   const handleClear = () => {
     setData(null);
+    setText('');
   }
 
 
   return (
     <Box bgcolor={Colores.primary} style={{
       color: 'white',
+      height: '100vh',
     }} className="p-5">
       <Col style={{
         display: 'flex',
@@ -57,9 +73,12 @@ function App() {
         alignItems: 'center',
         padding: '20px'
       }}>
-        <Col className="d-flex justify-content-center">
+        <Col className="d-flex justify-content-center flex-column">
           <Typography variant="h2" style={{ fontFamily: 'Lobster' }}>
             Tablas de verdad
+          </Typography>
+          <Typography variant="body1" style={{ fontFamily: 'Roboto' }}>
+            Aquí puedes generar tablas de verdad a partir de expresiones de lógica proposicional, simplemente ingresa las variables correspondientes :)
           </Typography>
         </Col>
         <TextField
@@ -70,52 +89,57 @@ function App() {
           variant="outlined"
           fullWidth
           InputProps={{
-            style: { color: 'white' }
+            style: { color: 'white', fontSize: '20px' } // Aumenta el tamaño de la fuente aquí
           }}
           InputLabelProps={{
-            style: { color: 'white' }
+            style: { color: 'white', fontSize: '20px' } // Aumenta el tamaño de la fuente aquí
           }}
         />
 
-        <Row className="d-flex" style={{ flexDirection: 'row' }}>
-          <Button
-            className='mt-5 mr-2'
-            variant="contained"
-            onClick={handleClick}
-            style={{ backgroundColor: Colores.secondary }}
-          >
-            Generar tabla de verdad
-          </Button>
-
-          <Button
-            className="mt-5 mb-5"
-            variant="contained"
-            style={{ backgroundColor: Colores.secondary }}
-            onClick={handleClear}
-          >
-            Limpiar
-          </Button>
-        </Row>
         {data && (
-          <Table striped bordered hover>
+          <Table striped bordered hover className='mt-5'>
             <thead>
-              <tr>
-                {Object.keys(data[0]).map((key, index) => (
-                  <th key={index}>{key}</th>
-                ))}
+              <tr style={{
+                fontSize: '25px',
+              }}>
+                {Object.keys(data[0]).map((key, index) => {
+                  let newKey = key.replace(/and/gi, '∧').replace(/or/gi, '∨').replace(/=>/gi, ' → ');
+                  return <th key={index}>{newKey}</th>
+                })}
               </tr>
             </thead>
             <tbody>
               {data.map((row, index) => (
                 <tr key={index}>
-                  {Object.values(row).map((value, i) => (
-                    <td key={i}>{value !== null && value !== undefined ? value.toString() : ''}</td>
-                  ))}
+                  {Object.values(row).map((value, i, arr) => {
+                    let displayValue = '';
+                    if (value !== null && value !== undefined) {
+                      if (typeof value === 'boolean') {
+                        displayValue = value ? 'T' : 'F';
+                      } else {
+                        displayValue = value.toString();
+                      }
+                    }
+                    return (
+                      <td key={i} style={i === arr.length - 1 ? { fontSize: '22px' } : {}}>
+                        {displayValue}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
           </Table>
+          
         )}
+        <div className='pt-5'>
+          <Button variant="danger" onClick={handleClear}>LIMPIAR TODA LA PANTALLA</Button>
+        </div>
+      <div className='pt-5'>
+        <Typography variant="body1" style={{ fontFamily: 'Roboto' }}>
+         El ancho de banda no crece en los árboles :( 
+        </Typography>
+      </div>
       </Col>
     </Box>
   );
