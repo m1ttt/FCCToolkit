@@ -1,0 +1,1 @@
+export const BACKEND_URL = process.env.NODE_ENV === 'production' ? 'http://159.54.143.117:8000' : 'http://localhost:8000';
