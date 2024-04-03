@@ -103,7 +103,7 @@ function App() {
                 fontSize: '25px',
               }}>
                 {Object.keys(data[0]).map((key, index) => {
-                  let newKey = key.replace(/and/gi, '∧').replace(/or/gi, '∨').replace(/=>/gi, ' → ');
+                  let newKey = key.replace(/and/gi, '∧').replace(/or/gi, '∨').replace(/=>/gi, '→').replace(/not/gi, '¬');
                   return <th key={index}>{newKey}</th>
                 })}
               </tr>
