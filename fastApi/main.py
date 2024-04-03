@@ -1,20 +1,17 @@
 from typing import Union
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from ttg import Truths
 import tdv
-from fastapi import HTTPException
 
 
 class ErrorModel(BaseModel):
     error: str
     mensaje: str
 
-
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,8 +37,3 @@ async def read_item(e: str):
         return JSONResponse(
             status_code=500, content={"error": "Error", "mensaje": str(ex)}
         )
-
-
-@app.get("/prueba")
-def funcion_de_prueba():
-    return {"mensaje": "hola mundo"}
