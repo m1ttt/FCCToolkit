@@ -13,7 +13,7 @@ function App() {
                     <Route path="/" element={<Navigate to="/tdvgen" />} />
                 </Routes>
             </Router>
-        </React.StrictMode>
+        </React.StrictMode> 
     )
 }
 
