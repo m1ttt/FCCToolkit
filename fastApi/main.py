@@ -12,10 +12,6 @@ import extras
 import os
 import sei
 
-class Item(BaseModel):
-    li: int
-    ls: int
-    f: str
 
 class ErrorModel(BaseModel):
     error: str
@@ -56,7 +52,7 @@ async def TablaDeVerdad(e: str):
 
 
 @app.post("/items/{item_id}")
-async def read_item(item_id: int, e: Union[str, None] = None):
+async def leer_tabla_de_verdad(item_id: int, e: Union[str, None] = None):
     variables = tdv.obtener_variables(e)
     expresiones = tdv.obtener_expresiones(e)
     return variables, expresiones
@@ -137,8 +133,10 @@ async def BorrarArchivos():
 
 
     
-@app.post("/sucesiones/{datos}")
-def read_item( item: Item):
-    return sei.sucesiones(item.li+1, item.ls, item.f)
+@app.get("/sucesiones")
+async def read_item( 
+    li: int, ls: int, f: str):
+
+    return sei.sucesiones(li+1, ls, f)
     
     

@@ -38,3 +38,27 @@ export async function postData(route, data) {
 
     return jsonResponse;
 }
+
+export async function postDataSucesiones(route, data) {
+    const url = BACKEND_URL + route;
+
+    console.log('URL completa:', url); // Imprime la URL completa
+    console.log('Datos enviados:', JSON.stringify(data)); // Imprime los datos que se están enviando
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const jsonResponse = await response.json();
+    console.log('Response:', jsonResponse); // Imprime la respuesta del servidor
+
+    return jsonResponse;
+}
