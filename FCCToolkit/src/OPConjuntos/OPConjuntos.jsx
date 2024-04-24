@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TextField, Card, CardContent, Chip, CardActionArea, Button, Select, MenuItem } from '@mui/material';
 import { Col, Row } from 'react-bootstrap';
 import { postData } from '../Funciones/postData';
+import { Paper } from '@mui/material';
 import { Typography } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Colores } from '../Enums/Colores';
@@ -17,6 +18,7 @@ function OPConjuntos() {
     const [files, setFiles] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');
+    const [result, setResult] = useState(''); // [
     const letters = ['A', 'B', 'C', 'D']; // Array of letters
     const opciones = {
         'Unión': 1,
@@ -87,26 +89,30 @@ function OPConjuntos() {
             formData.append('files', newFile);
         });
         formData.append('message', opciones[selectedOption]);
-    
+
         // Enviar el objeto FormData
         postData('/cargar_archivos', formData)
             .then(data => {
-                console.log(data);
-                MySwal.fire({
-                    icon: 'success',
-                    title: '¡Documentos cargados!',
-                    text: 'Los documentos se han cargado correctamente.',
-                });
+                console.log('aaa' + data);
+                setResult(data.result.join(' ')); // Convierte el resultado en una cadena separada por espacios
                 setBatchCounter(batchCounter + 1); // Incrementa el contador de lotes después de cargar los archivos
                 setSelectedFiles([]); // Limpia los archivos seleccionados para el próximo lote
             })
             .catch(error => {
                 console.error(error);
-                MySwal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Hubo un error al cargar los documentos.',
-                });
+                if (error.response && error.response.status === 400) {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Hay un problema con los archivos.',
+                    });
+                } else {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Hay un problema con los archivos.',
+                    });
+                }
             });
     };
 
@@ -132,7 +138,7 @@ function OPConjuntos() {
                         <Typography variant="h2" style={{ fontFamily: 'Lobster' }}>
                             Operaciones sobre conjuntos
                         </Typography>
-                        <Typography variant="body1" style={{ fontFamily: 'Roboto' }}>
+                        <Typography variant="h5" style={{ fontFamily: 'Roboto' }}>
                             Selecciona máximo 4 archivos .txt para realizar operaciones sobre conjuntos :)
                         </Typography>
                     </Col>
@@ -141,7 +147,9 @@ function OPConjuntos() {
                             Limpiar conjuntos
                         </Button>
                         <input type="file" accept=".txt" multiple onChange={handleFileChange} />
-
+                        <Typography className={"mt-2"}variant="h5" style={{ fontFamily: 'Arial' }}>
+                            Escoge los conjuntos a operar
+                        </Typography>
                         {files.length > 0 && (
                             <>
                                 <Row className='pt-3'>
@@ -191,7 +199,18 @@ function OPConjuntos() {
                         )}
                     </div>
                 </Col>
+                <Box>
+                    <Paper style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px' }}>
+                        <Typography variant="h4" style={{ margin: '32px 0' }}>
+                            Resultado:
+                        </Typography>
+                        <Typography variant="h6" style={{ backgroundColor: '#f5f5f5', padding: '32px', borderRadius: '4px' }}>
+                            {result}
+                        </Typography>
+                    </Paper>
+                </Box>
             </Box>
+
         </>
     );
 }

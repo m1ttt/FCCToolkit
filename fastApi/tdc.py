@@ -7,15 +7,12 @@ def union(a, b, c=None, d=None):
     return sorted(list(result))
 
 def interseccion(a, b, c=None, d=None):
-    if c is None:
-        c = a  # Si c no se proporciona, se toma todo el conjunto a
-    if d is None:
-        d = a  # Si d no se proporciona, se toma todo el conjunto a
-    result = []
-    for element in a:
-        if element in b and element in c and element in d:
-            result.append(element)
-    return result
+    result = set(a).intersection(b)
+    if c is not None and c != []:
+        result = result.intersection(c)
+    if d is not None and d != []:
+        result = result.intersection(d)
+    return list(result)
 
 def diferencia(a, b, c=None, d=None):
     if c is None:
