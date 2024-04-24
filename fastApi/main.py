@@ -13,9 +13,9 @@ import os
 import sei
 
 class Item(BaseModel):
-    li: Optional[int] = None
-    ls: Optional[int] = None
-    f: Optional[str] = None
+    li: int
+    ls: int
+    f: str
 
 class ErrorModel(BaseModel):
     error: str
@@ -38,8 +38,6 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
-
-
 
 @app.get("/tabla_verdad/{e}", response_model=Union[list, ErrorModel])
 async def TablaDeVerdad(e: str):
