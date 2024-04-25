@@ -22,7 +22,7 @@ const MySwal = withReactContent(Swal);
 function Sucesiones() {
     const [limiteInferior, setLimiteInferior] = useState("");
     const [limiteSuperior, setLimiteSuperior] = useState("");
-    const [results, setResults] = useState({ inferior: null, suma: null, multiplicacion: null, serie: [] });
+    const [results, setResults] = useState({ suma: null, multiplicacion: null, serie: [] });
     const [formula, setFormula] = useState("");
 
 
@@ -38,6 +38,14 @@ function Sucesiones() {
             .replace('\\frac', '/') // Reemplaza '\frac' (fracción en LaTeX) con '/' (división en Python)
             .replace('{', '') // Elimina '{'
             .replace('}', ''); // Elimina '}'
+    };
+
+
+    const handleClearButtonClick = () => {
+        setFormula("");
+        setLimiteInferior("");
+        setLimiteSuperior("");
+        setResults({ suma: null, multiplicacion: null, serie: [] });
     };
 
     const handleFormulaChange = (event) => {
@@ -100,7 +108,6 @@ function Sucesiones() {
             .then(result => {
                 console.log(result);
                 setResults({
-                    inferior: result[0],
                     suma: result[1],
                     multiplicacion: result[2],
                     serie: result[3]
@@ -188,12 +195,15 @@ function Sucesiones() {
                                     }}
                                     fullWidth
                                 />
-                                {isValidFormula(formula) && (
+                                {isValidFormula(formula) && formula !== "" && (
                                     <MathJaxFormula formula={`$$\\Huge{${formula.replace(/int/g, '\\int').replace(/ /g, '\\;')}}$$`} />
                                 )}
 
                                 <Button variant="contained" color="primary" onClick={handleButtonClick}>
                                     Calcular
+                                </Button>
+                                <Button variant="contained" color="secondary" onClick={handleClearButtonClick} style={{ marginLeft: '10px' }}>
+                                    Limpiar
                                 </Button>
                             </Box>
                         </div>
@@ -202,38 +212,31 @@ function Sucesiones() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle1" fontWeight="bold">Serie</Typography>
+                                    <TableCell style={{ backgroundColor: '#ff7f7f', color: 'white', fontSize: '1.4em' }}>
+                                        <Typography variant="h5" fontWeight="bold">Serie</Typography>
+                                    </TableCell>
+                                    <TableCell style={{ backgroundColor: '#ff7f7f', color: 'white', fontSize: '1.4em' }}>
+                                        <Typography variant="h5" fontWeight="bold">Suma</Typography>
+                                    </TableCell>
+                                    <TableCell style={{ backgroundColor: '#ff7f7f', color: 'white', fontSize: '1.4em' }}>
+                                        <Typography variant="h5" fontWeight="bold">Multiplicación</Typography>
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <TableRow>
-                                    <TableCell>
-                                        <Grid container spacing={1}>
-                                            {results.serie.map((result, index) => (
-                                                <Grid key={index} item>
-                                                    {result}
-                                                </Grid>
-                                            ))}
-                                        </Grid>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle1" fontWeight="bold">Inferior:</Typography> {results.inferior}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle1" fontWeight="bold">Suma:</Typography> {results.suma}
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle1" fontWeight="bold">Multiplicación:</Typography> {results.multiplicacion}
-                                    </TableCell>
-                                </TableRow>
+                                {results.serie.map((result, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell style={{ fontSize: '1.1em' }}>
+                                            {index === 0 ? `Término k(n): ${result}` : `Término k(n-${index}): ${result}`}
+                                        </TableCell>
+                                        <TableCell style={{ fontSize: '1.1em' }}>
+                                            {index === 0 ? results.suma : ""}
+                                        </TableCell>
+                                        <TableCell style={{ fontSize: '1.1em' }}>
+                                            {index === 0 ? results.multiplicacion : ""}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
