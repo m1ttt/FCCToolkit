@@ -37,3 +37,4 @@ def sucesiones(inferior, superior, formula):
         valor = float(eval(formula))
         serie = [round(valor, 3)]
         return inferior-1, valor, valor, serie
+    
