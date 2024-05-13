@@ -2,6 +2,7 @@ import ttg
 import tdv
 import tdc
 import sei
+import ryf
 
 def leer_conjunto(nom_archivo):
     with open(nom_archivo,'r') as archivo:
@@ -18,13 +19,27 @@ def toolkitSucesiones():
         print("Termino k(n-",i,"): ",res[3][i], sep="")
     print("Suma =",res[1])
     print("Multiplicacion =",res[2])
+    
+def relaciones():
+    cadena = input("Ingrese el conjunto de parejas ordenadas:")
+    array = ryf.conseguirParametros(cadena)
+    print("Reflexiva:",ryf.reflexiva(array[0],array[1]))
+    print("Simetrica:",ryf.simetrica(array[0],array[1]))
+    print("Transitiva:",ryf.transitiva(array[0],array[1]))
+    print("Dominio:",set(array[0]))
+    print("Codominio:",set(array[1]))
+    print("Es funcion:",ryf.isFuncion(array[0]))
+    op = input("Desea ver el grafo dirigido de la relacion (S/N):")
+    if op.upper() == 'S' :
+        ryf.crearGrafo(array[0],array[1])
 
 while True:
     print("\nCAJA DE HERRAMIENTAS DE FCC\n")
     print("1.FCC ToolKit")
     print("2.Teoria de conjuntos")
     print("3.Sucesiones")
-    print("4.Salir\n")
+    print("4.Relaciones y funciones")
+    print("5.Salir\n")
 
     op = input("Ingrese una opcion: ")
     if op == "1":
@@ -130,6 +145,8 @@ while True:
                 break
     elif op == "3":
         toolkitSucesiones()
+    elif op == "4":
+        relaciones();
     else:
         print("\nVuelva pronto")
         break

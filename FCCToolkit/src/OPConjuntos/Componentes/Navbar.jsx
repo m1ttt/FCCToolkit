@@ -12,6 +12,7 @@ function NavPrincipal() {
                         <Nav.Link href="/tdvgen">TDV Generador </Nav.Link>
                         <Nav.Link href="/opscon">OPS Sobre conjuntos</Nav.Link>
                         <Nav.Link href="/sucesiones">Sucesiones</Nav.Link>
+                        <Nav.Link href="/relaciones">Relaciones</Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>

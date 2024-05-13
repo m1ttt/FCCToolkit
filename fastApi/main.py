@@ -11,6 +11,7 @@ import shutil
 import extras
 import os
 import sei
+import ryf
 
 
 class ErrorModel(BaseModel):
@@ -138,5 +139,11 @@ async def read_item(
     li: int, ls: int, f: str):
 
     return sei.sucesiones(li+1, ls, f)
-    
-    
+
+@app.get("/relaciones")
+def read_item(cad:Union[str,None]=None):
+    if(cad == None):
+        cad = ""
+    array = ryf.conseguirParametros(cad)
+    return ryf.reflexiva(array[0],array[1]),ryf.simetrica(array[0],array[1]), \
+           ryf.transitiva(array[0],array[1]), set(array[0]), set(array[1]), ryf.isFuncion(array[0])
