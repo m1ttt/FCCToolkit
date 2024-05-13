@@ -146,7 +146,7 @@ while True:
     elif op == "3":
         toolkitSucesiones()
     elif op == "4":
-        relaciones();
+        relaciones()
     else:
         print("\nVuelva pronto")
         break

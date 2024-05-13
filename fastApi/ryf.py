@@ -1,6 +1,8 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import re
+import base64
+import io
 
 def crearGrafo(numX, numY):
     
@@ -21,6 +23,39 @@ def crearGrafo(numX, numY):
     nx.draw_networkx_edges(G, pos, arrows=True)
 
     plt.show()
+    
+
+
+
+def crearGrafo64(numX, numY):
+    G = nx.DiGraph()
+
+    nodos = set(numX + numY)
+    for nodo in nodos:
+        G.add_node(nodo)
+
+    for i in range(len(numX)):
+        G.add_edge(numX[i], numY[i])
+    if(len(nodos) == 2):
+        pos = nx.spring_layout(G, seed=42)
+    else:
+        pos = nx.circular_layout(G)
+    nx.draw_networkx_nodes(G, pos)
+    nx.draw_networkx_labels(G, pos)
+    nx.draw_networkx_edges(G, pos, arrows=True)
+
+    # Guarda el gráfico en un objeto BytesIO
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+
+    # Codifica el objeto BytesIO en base64 y decodifica a utf-8 para obtener una cadena
+    image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+
+    plt.close()
+
+    return image_base64
+    
 
 def conseguirParametros(cadena):
     patron = r'\((\d+),(\d+)\)'

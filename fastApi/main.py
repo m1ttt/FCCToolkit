@@ -145,5 +145,13 @@ def read_item(cad:Union[str,None]=None):
     if(cad == None):
         cad = ""
     array = ryf.conseguirParametros(cad)
-    return ryf.reflexiva(array[0],array[1]),ryf.simetrica(array[0],array[1]), \
-           ryf.transitiva(array[0],array[1]), set(array[0]), set(array[1]), ryf.isFuncion(array[0])
+    graph_base64 = ryf.crearGrafo64(array[0], array[1])
+    return {
+        "reflexiva": ryf.reflexiva(array[0],array[1]),
+        "simetrica": ryf.simetrica(array[0],array[1]),
+        "transitiva": ryf.transitiva(array[0],array[1]),
+        "dominio": set(array[0]),
+        "codominio": set(array[1]),
+        "isFuncion": ryf.isFuncion(array[0]),
+        "graph": graph_base64
+    }
